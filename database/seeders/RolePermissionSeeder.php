@@ -11,14 +11,23 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionSeeder extends Seeder
 {
-    /** Izin awal per role. Hanya diterapkan saat role baru dibuat; setelahnya diatur lewat UI. */
+    /**
+     * Izin awal per role (kumulatif semua versi).
+     * - Role baru: menerima semua izin di sini.
+     * - Role lama: hanya menerima izin yang BARU dibuat pada eksekusi ini,
+     *   sehingga perubahan yang sudah Anda atur lewat UI tidak ditimpa.
+     */
     private const DEFAULTS = [
-        User::SUPER_ADMIN => [],                       // akses penuh via Gate::before
-        'Ketua'           => ['users.view', 'roles.view', 'audit.view'],
-        'Wakil Ketua'     => ['users.view', 'audit.view'],
-        'Sekretaris'      => ['users.view', 'users.create', 'users.update', 'users.reset-password'],
-        'Bendahara'       => [],                       // izin keuangan menyusul di V1.4
-        'Ketua Divisi'    => [],
+        User::SUPER_ADMIN => [],   // akses penuh via Gate::before
+        'Ketua'           => ['users.view', 'roles.view', 'audit.view', 'members.view', 'members.assign', 'organization.view'],
+        'Wakil Ketua'     => ['users.view', 'audit.view', 'members.view', 'organization.view'],
+        'Sekretaris'      => [
+            'users.view', 'users.create', 'users.update', 'users.reset-password',
+            'members.view', 'members.create', 'members.update', 'members.assign', 'members.activate-account',
+            'organization.view', 'organization.manage',
+        ],
+        'Bendahara'       => [],   // izin keuangan menyusul di V1.4
+        'Ketua Divisi'    => ['members.view'],
         'Anggota'         => [],
     ];
 
@@ -26,14 +35,19 @@ class RolePermissionSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
+        $created = [];
         foreach (PermissionCatalog::names() as $name) {
-            Permission::findOrCreate($name, 'web');
+            $permission = Permission::findOrCreate($name, 'web');
+            if ($permission->wasRecentlyCreated) {
+                $created[] = $name;
+            }
         }
 
         foreach (self::DEFAULTS as $roleName => $permissions) {
             $role = Role::findOrCreate($roleName, 'web');
-            if ($role->wasRecentlyCreated && $permissions) {
-                $role->syncPermissions($permissions);
+            $grant = $role->wasRecentlyCreated ? $permissions : array_values(array_intersect($permissions, $created));
+            if ($grant) {
+                $role->givePermissionTo($grant);
             }
         }
 

@@ -24,8 +24,8 @@ export default function Index({ users, roles, filters }) {
             <Head title="Akun Pengguna" />
             <PageHeader
                 title="Akun Pengguna"
-                description="Kelola akun akses aplikasi. Setiap akun masuk menggunakan Nomor Anggota."
-                actions={can('users.create') && <Button href="/users/create">Tambah akun</Button>}
+                description="Kelola peran, status, dan kata sandi akun. Akun baru dibuat dari halaman Anggota (Aktifkan akun)."
+                actions={can('members.view') && <Button href="/members" variant="secondary">Buka daftar anggota</Button>}
             />
 
             <Card>

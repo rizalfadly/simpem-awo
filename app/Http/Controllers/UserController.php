@@ -13,6 +13,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
+/**
+ * Sejak V1.1 akun TIDAK dibuat di sini, melainkan lewat Anggota > "Aktifkan akun"
+ * (Member = identitas, User = akun akses). Halaman ini mengelola peran, status, dan sandi akun.
+ */
 class UserController extends Controller
 {
     public function index(Request $request): Response
@@ -38,6 +42,7 @@ class UserController extends Controller
             ->withQueryString()
             ->through(fn (User $u) => [
                 'id'            => $u->id,
+                'member_id'     => $u->member_id,
                 'nomor_anggota' => $u->nomor_anggota,
                 'name'          => $u->name,
                 'email'         => $u->email,
@@ -55,57 +60,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function create(Request $request): Response
-    {
-        return Inertia::render('Users/Form', [
-            'account' => null,
-            'roles'   => $this->assignableRoles($request->user()),
-        ]);
-    }
-
-    public function store(Request $request): RedirectResponse
-    {
-        $request->merge(['nomor_anggota' => strtoupper(trim((string) $request->input('nomor_anggota')))]);
-
-        $data = $request->validate([
-            'nomor_anggota' => ['required', 'string', 'max:30', 'regex:/^[A-Z0-9\-.\/]+$/', Rule::unique('users', 'nomor_anggota')],
-            'name'          => ['required', 'string', 'max:120'],
-            'email'         => ['nullable', 'email', 'max:190', Rule::unique('users', 'email')],
-            'password'      => ['nullable', 'string', 'min:8', 'max:100'],
-            'roles'         => ['array'],
-            'roles.*'       => ['string', Rule::in($this->assignableRoles($request->user()))],
-        ], [
-            'nomor_anggota.regex'  => 'Nomor anggota hanya boleh huruf, angka, tanda - . /',
-            'nomor_anggota.unique' => 'Nomor anggota sudah terdaftar.',
-            'email.unique'         => 'Email sudah dipakai akun lain.',
-            'roles.*.in'           => 'Peran yang dipilih tidak diizinkan.',
-        ]);
-
-        $generated = blank($data['password'] ?? null);
-        $plain = $generated ? Str::password(10, symbols: false) : $data['password'];
-
-        $user = User::create([
-            'nomor_anggota'        => $data['nomor_anggota'],
-            'name'                 => $data['name'],
-            'email'                => $data['email'] ?? null,
-            'password'             => $plain,
-            'is_active'            => true,
-            'must_change_password' => true,
-        ]);
-
-        $roles = $data['roles'] ?? [];
-        if ($roles) {
-            $user->syncRoles($roles);
-            Audit::record('roles_changed', "Peran {$user->auditLabel()} ditetapkan", $user, [], ['roles' => $roles]);
-        }
-
-        $redirect = to_route('users.index')->with('success', "Akun {$user->nomor_anggota} berhasil dibuat.");
-
-        return $generated
-            ? $redirect->with('generated_password', ['nomor' => $user->nomor_anggota, 'name' => $user->name, 'password' => $plain])
-            : $redirect;
-    }
-
     public function edit(Request $request, User $user): Response
     {
         $this->guardTarget($request->user(), $user);
@@ -113,6 +67,7 @@ class UserController extends Controller
         return Inertia::render('Users/Form', [
             'account' => [
                 'id'            => $user->id,
+                'member_id'     => $user->member_id,
                 'nomor_anggota' => $user->nomor_anggota,
                 'name'          => $user->name,
                 'email'         => $user->email,
@@ -127,12 +82,19 @@ class UserController extends Controller
         $actor = $request->user();
         $this->guardTarget($actor, $user);
 
-        $data = $request->validate([
-            'name'    => ['required', 'string', 'max:120'],
-            'email'   => ['nullable', 'email', 'max:190', Rule::unique('users', 'email')->ignore($user->id)],
+        $rules = [
             'roles'   => ['array'],
             'roles.*' => ['string', Rule::in($this->assignableRoles($actor))],
-        ], [
+        ];
+        // Akun tanpa anggota (mis. akun teknis) masih boleh diubah nama/emailnya di sini.
+        if (! $user->member_id) {
+            $rules += [
+                'name'  => ['required', 'string', 'max:120'],
+                'email' => ['nullable', 'email', 'max:190', Rule::unique('users', 'email')->ignore($user->id)],
+            ];
+        }
+
+        $data = $request->validate($rules, [
             'email.unique' => 'Email sudah dipakai akun lain.',
             'roles.*.in'   => 'Peran yang dipilih tidak diizinkan.',
         ]);
@@ -144,7 +106,9 @@ class UserController extends Controller
             throw ValidationException::withMessages(['roles' => 'Anda tidak dapat mencabut peran Super Admin dari akun sendiri.']);
         }
 
-        $user->update(['name' => $data['name'], 'email' => $data['email'] ?? null]);
+        if (! $user->member_id) {
+            $user->update(['name' => $data['name'], 'email' => $data['email'] ?? null]);
+        }
 
         $old = $user->getRoleNames()->sort()->values()->all();
         $user->syncRoles($roles);
@@ -198,7 +162,7 @@ class UserController extends Controller
             return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
 
-        $user->delete(); // soft delete, nomor anggota tidak bisa dipakai ulang
+        $user->delete(); // soft delete; keanggotaan tetap ada dan akun bisa diaktifkan lagi dari halaman Anggota
 
         return back()->with('success', 'Akun dihapus.');
     }

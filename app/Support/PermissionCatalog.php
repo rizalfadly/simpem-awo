@@ -4,8 +4,8 @@ namespace App\Support;
 
 /**
  * Sumber tunggal daftar permission SIMPEM.
- * Setiap versi roadmap menambah grup baru di sini (mis. V1.4 -> 'finance.*'),
- * lalu jalankan: php artisan db:seed --class=RolePermissionSeeder
+ * Setiap versi roadmap menambah grup baru di sini, lalu jalankan:
+ *   php artisan db:seed --class=RolePermissionSeeder
  */
 final class PermissionCatalog
 {
@@ -13,11 +13,29 @@ final class PermissionCatalog
     {
         return [
             [
+                'label' => 'Keanggotaan',
+                'items' => [
+                    'members.view'             => 'Melihat daftar dan profil anggota',
+                    'members.create'           => 'Menambah anggota',
+                    'members.update'           => 'Mengubah data, status, dan QR anggota',
+                    'members.assign'           => 'Menetapkan jabatan dan divisi anggota',
+                    'members.activate-account' => 'Mengaktifkan akun anggota',
+                    'members.delete'           => 'Menghapus anggota',
+                ],
+            ],
+            [
+                'label' => 'Struktur Organisasi',
+                'items' => [
+                    'organization.view'   => 'Melihat data divisi, jabatan, dan periode',
+                    'organization.manage' => 'Mengelola divisi, jabatan, dan periode kepengurusan',
+                ],
+            ],
+            [
                 'label' => 'Akun Pengguna',
                 'items' => [
                     'users.view'           => 'Melihat daftar akun',
                     'users.create'         => 'Membuat akun',
-                    'users.update'         => 'Mengubah akun, peran, dan status aktif',
+                    'users.update'         => 'Mengubah peran dan status aktif akun',
                     'users.reset-password' => 'Reset kata sandi akun',
                     'users.delete'         => 'Menghapus akun',
                 ],

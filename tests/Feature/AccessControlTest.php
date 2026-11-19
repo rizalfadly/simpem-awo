@@ -72,39 +72,8 @@ class AccessControlTest extends TestCase
         $this->assertTrue($admin->fresh()->is_active);
     }
 
-    public function test_creating_a_user_assigns_role_and_writes_audit_log(): void
-    {
-        $this->actingAs($this->superAdmin())
-            ->post('/users', ['nomor_anggota' => 'awo-0200', 'name' => 'Budi', 'roles' => ['Anggota']])
-            ->assertRedirect('/users')
-            ->assertSessionHas('generated_password');
 
-        $user = User::where('nomor_anggota', 'AWO-0200')->firstOrFail();
-        $this->assertTrue($user->must_change_password);
-        $this->assertTrue($user->hasRole('Anggota'));
-        $this->assertDatabaseHas('audit_logs', ['event' => 'created', 'auditable_id' => $user->id]);
-        $this->assertDatabaseHas('audit_logs', ['event' => 'roles_changed', 'auditable_id' => $user->id]);
-    }
 
-    public function test_password_value_is_never_written_to_audit_log(): void
-    {
-        $this->actingAs($this->superAdmin())
-            ->post('/users', ['nomor_anggota' => 'AWO-0201', 'name' => 'Sari', 'password' => 'RahasiaBanget1']);
-
-        $this->assertStringNotContainsString('RahasiaBanget1', \App\Models\AuditLog::all()->toJson());
-    }
-
-    public function test_non_super_admin_cannot_assign_super_admin_role(): void
-    {
-        $actor = User::factory()->create();
-        $actor->givePermissionTo('users.create');
-
-        $this->actingAs($actor)
-            ->post('/users', ['nomor_anggota' => 'AWO-0202', 'name' => 'X', 'roles' => [User::SUPER_ADMIN]])
-            ->assertSessionHasErrors('roles.0');
-
-        $this->assertDatabaseMissing('users', ['nomor_anggota' => 'AWO-0202']);
-    }
 
     public function test_non_super_admin_cannot_touch_a_super_admin_account(): void
     {
@@ -154,5 +123,25 @@ class AccessControlTest extends TestCase
 
         $this->actingAs($this->superAdmin())->get("/roles/{$role->id}/edit")->assertForbidden();
         $this->actingAs($this->superAdmin())->delete("/roles/{$role->id}")->assertForbidden();
+    }
+
+    public function test_non_super_admin_cannot_assign_super_admin_role(): void
+    {
+        $actor = User::factory()->create();
+        $actor->givePermissionTo('users.update');
+        $target = User::factory()->create();
+
+        $this->actingAs($actor)
+            ->put("/users/{$target->id}", ['roles' => [User::SUPER_ADMIN]])
+            ->assertSessionHasErrors('roles.0');
+
+        $this->assertFalse($target->fresh()->hasRole(User::SUPER_ADMIN));
+    }
+
+    public function test_accounts_can_no_longer_be_created_from_users_module(): void
+    {
+        $this->actingAs($this->superAdmin())
+            ->post('/users', ['nomor_anggota' => 'AWO-0300', 'name' => 'X'])
+            ->assertStatus(405);
     }
 }

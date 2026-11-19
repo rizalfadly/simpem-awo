@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -17,6 +18,7 @@ class User extends Authenticatable
     public const SUPER_ADMIN = 'Super Admin';
 
     protected $fillable = [
+        'member_id',
         'nomor_anggota',
         'name',
         'email',
@@ -42,6 +44,11 @@ class User extends Authenticatable
     protected function nomorAnggota(): Attribute
     {
         return Attribute::set(fn ($value) => strtoupper(trim((string) $value)));
+    }
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class)->withTrashed();
     }
 
     public function isSuperAdmin(): bool

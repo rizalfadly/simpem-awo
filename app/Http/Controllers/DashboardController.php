@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Models\Member;
 use App\Models\User;
 use App\Support\PermissionCatalog;
 use Illuminate\Http\Request;
@@ -18,8 +19,11 @@ class DashboardController extends Controller
 
         // Widget hanya dikirim jika pengguna punya hak aksesnya.
         $stats = [];
+        if ($user->can('members.view')) {
+            $stats[] = ['label' => 'Anggota aktif', 'value' => Member::where('status', Member::ACTIVE)->count()];
+            $stats[] = ['label' => 'Alumni', 'value' => Member::where('status', 'alumni')->count()];
+        }
         if ($user->can('users.view')) {
-            $stats[] = ['label' => 'Total akun', 'value' => User::count()];
             $stats[] = ['label' => 'Akun aktif', 'value' => User::where('is_active', true)->count()];
         }
         if ($user->can('roles.view')) {
@@ -44,9 +48,9 @@ class DashboardController extends Controller
             ->values();
 
         return Inertia::render('Dashboard', [
-            'stats'  => $stats,
-            'recent' => $recent,
-            'access' => $access,
+            'stats'         => $stats,
+            'recent'        => $recent,
+            'access'        => $access,
             'last_login_at' => $user->last_login_at?->format('d/m/Y H:i'),
         ]);
     }
