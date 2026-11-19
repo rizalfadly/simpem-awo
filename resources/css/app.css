@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animasi Logo Heksagon Arek Wetan Organizer & Login SIMPEM */
+@keyframes awoHexDraw {
+    0% {
+        stroke-dashoffset: 620;
+        opacity: 0.25;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes awoEnergyPulse {
+    0% {
+        stroke-dashoffset: 380;
+    }
+    100% {
+        stroke-dashoffset: -380;
+    }
+}
+
+@keyframes awoLogoFloat {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes simpemShake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-7px);
+    }
+    40% {
+        transform: translateX(7px);
+    }
+    60% {
+        transform: translateX(-5px);
+    }
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.awo-hex-container {
+    animation: awoLogoFloat 5.5s ease-in-out infinite;
+}
+
+.awo-stroke-cyan {
+    fill: none;
+    stroke: #36d8e8;
+    stroke-width: 7;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    stroke-dasharray: 620;
+    animation: awoHexDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    filter: drop-shadow(0 0 8px rgba(54, 216, 232, 0.45));
+}
+
+.awo-stroke-steel {
+    fill: none;
+    stroke: #7a8b8c;
+    stroke-width: 6.5;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    stroke-dasharray: 620;
+    animation: awoHexDraw 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.awo-stroke-beam {
+    fill: none;
+    stroke: #a5f3fc;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 55 325;
+    animation: awoEnergyPulse 3.6s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(54, 216, 232, 0.95));
+}
+
+.simpem-shake {
+    animation: simpemShake 0.38s ease-in-out;
+}
+
