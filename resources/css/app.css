@@ -91,3 +91,57 @@
     animation: simpemShake 0.38s ease-in-out;
 }
 
+@keyframes circuitPan {
+    0% {
+        transform: scale(1.06) translate3d(0%, 0%, 0);
+    }
+    50% {
+        transform: scale(1.1) translate3d(-1.5%, -1.2%, 0);
+    }
+    100% {
+        transform: scale(1.06) translate3d(0%, 0%, 0);
+    }
+}
+
+@keyframes cyanPulse {
+    0%, 100% {
+        opacity: 0.45;
+    }
+    50% {
+        opacity: 0.9;
+    }
+}
+
+@keyframes cardShimmer {
+    0% {
+        transform: translateX(-140%) skewX(-18deg);
+    }
+    55%, 100% {
+        transform: translateX(260%) skewX(-18deg);
+    }
+}
+
+.animate-circuit-pan {
+    animation: circuitPan 14s ease-in-out infinite;
+}
+
+.animate-cyan-pulse {
+    animation: cyanPulse 3.2s ease-in-out infinite;
+}
+
+.animate-card-shimmer {
+    animation: cardShimmer 5.5s ease-in-out infinite;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .animate-circuit-pan,
+    .animate-cyan-pulse,
+    .animate-card-shimmer {
+        animation: none !important;
+    }
+}
