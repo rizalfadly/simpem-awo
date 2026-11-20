@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
+use App\Models\ActivityReport;
 use App\Models\AuditLog;
 use App\Models\Member;
+use App\Models\NewsPost;
 use App\Models\User;
 use App\Support\PermissionCatalog;
 use Illuminate\Http\Request;
@@ -30,6 +33,39 @@ class DashboardController extends Controller
             $stats[] = ['label' => 'Role', 'value' => Role::count()];
         }
 
+        if ($user->can('activities.approve')) {
+            $stats[] = [
+                'label' => 'Menunggu persetujuan kegiatan',
+                'value' => Activity::where('status', 'proposed')->count() + ActivityReport::where('status', 'submitted')->count(),
+            ];
+        }
+
+        $upcoming = Activity::query()
+            ->where('status', 'approved')
+            ->where('ends_at', '>=', now())
+            ->with('division:id,name')
+            ->orderBy('starts_at')
+            ->limit(4)
+            ->get()
+            ->map(fn (Activity $a) => [
+                'id'       => $a->id,
+                'title'    => $a->title,
+                'when'     => $a->starts_at->format('d/m/Y H:i'),
+                'location' => $a->location,
+                'division' => $a->division?->name,
+            ]);
+
+        $news = NewsPost::where('status', 'published')
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get(['id', 'title', 'excerpt', 'published_at'])
+            ->map(fn (NewsPost $n) => [
+                'id'           => $n->id,
+                'title'        => $n->title,
+                'excerpt'      => $n->excerpt,
+                'published_at' => $n->published_at?->format('d/m/Y'),
+            ]);
+
         $recent = $user->can('audit.view')
             ? AuditLog::latest('id')->limit(8)->get()->map(fn (AuditLog $l) => [
                 'id'          => $l->id,
@@ -50,6 +86,8 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'stats'         => $stats,
             'recent'        => $recent,
+            'upcoming'      => $upcoming,
+            'news'          => $news,
             'access'        => $access,
             'last_login_at' => $user->last_login_at?->format('d/m/Y H:i'),
         ]);

@@ -19,15 +19,17 @@ class RolePermissionSeeder extends Seeder
      */
     private const DEFAULTS = [
         User::SUPER_ADMIN => [],   // akses penuh via Gate::before
-        'Ketua'           => ['users.view', 'roles.view', 'audit.view', 'members.view', 'members.assign', 'organization.view'],
-        'Wakil Ketua'     => ['users.view', 'audit.view', 'members.view', 'organization.view'],
+        'Ketua'           => ['users.view', 'roles.view', 'audit.view', 'members.view', 'members.assign', 'organization.view', 'activities.view', 'activities.approve', 'content.publish', 'archive.view'],
+        'Wakil Ketua'     => ['users.view', 'audit.view', 'members.view', 'organization.view', 'activities.view', 'archive.view'],
         'Sekretaris'      => [
             'users.view', 'users.create', 'users.update', 'users.reset-password',
             'members.view', 'members.create', 'members.update', 'members.assign', 'members.activate-account',
             'organization.view', 'organization.manage',
+            'activities.view', 'activities.create', 'activities.update', 'activities.delete',
+            'gallery.manage', 'news.manage', 'content.publish', 'archive.view', 'archive.manage',
         ],
-        'Bendahara'       => [],   // izin keuangan menyusul di V1.4
-        'Ketua Divisi'    => ['members.view'],
+        'Bendahara'       => ['activities.view'],   // izin keuangan menyusul di V1.4
+        'Ketua Divisi'    => ['members.view', 'activities.view', 'activities.create'],
         'Anggota'         => [],
     ];
 

@@ -31,6 +31,26 @@ final class PermissionCatalog
                 ],
             ],
             [
+                'label' => 'Kegiatan',
+                'items' => [
+                    'activities.view'    => 'Melihat seluruh kegiatan beserta proposal, anggaran, dan LPJ',
+                    'activities.create'  => 'Membuat kegiatan',
+                    'activities.update'  => 'Mengubah kegiatan mana pun (selain PIC dan pembuatnya)',
+                    'activities.approve' => 'Menyetujui/menolak proposal dan menerima/merevisi LPJ',
+                    'activities.delete'  => 'Menghapus kegiatan berstatus draf atau dibatalkan',
+                ],
+            ],
+            [
+                'label' => 'Dokumentasi & Publikasi',
+                'items' => [
+                    'gallery.manage'  => 'Mengelola semua album, foto, dan video',
+                    'news.manage'     => 'Menulis dan mengelola berita organisasi',
+                    'content.publish' => 'Menerbitkan / menarik album dan berita',
+                    'archive.view'    => 'Melihat dokumen arsip terbatas',
+                    'archive.manage'  => 'Mengelola arsip dokumen',
+                ],
+            ],
+            [
                 'label' => 'Akun Pengguna',
                 'items' => [
                     'users.view'           => 'Melihat daftar akun',

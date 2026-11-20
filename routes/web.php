@@ -1,12 +1,21 @@
 <?php
 
+use App\Http\Controllers\ActivityBudgetController;
+use App\Http\Controllers\ActivityCommitteeController;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ActivityReportController;
+use App\Http\Controllers\ActivityTimelineController;
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemberAssignmentController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MemberCardController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -73,6 +82,82 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function () {
             Route::put('/periode/{period}', [OrganizationController::class, 'updatePeriod'])->name('periods.update');
             Route::delete('/periode/{period}', [OrganizationController::class, 'destroyPeriod'])->name('periods.destroy');
         });
+    });
+
+    // Kegiatan & kepanitiaan (akses dicek di controller/policy: ringkasan terbuka, detail sesuai peran)
+    Route::prefix('activities')->name('activities.')->group(function () {
+        Route::get('/', [ActivityController::class, 'index'])->name('index');
+        Route::get('/create', [ActivityController::class, 'create'])->name('create')->middleware('can:activities.create');
+        Route::post('/', [ActivityController::class, 'store'])->name('store')->middleware('can:activities.create');
+        Route::get('/{activity}', [ActivityController::class, 'show'])->name('show');
+        Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('edit');
+        Route::put('/{activity}', [ActivityController::class, 'update'])->name('update');
+        Route::delete('/{activity}', [ActivityController::class, 'destroy'])->name('destroy')->middleware('can:activities.delete');
+
+        Route::put('/{activity}/proposal', [ActivityController::class, 'updateProposal'])->name('proposal.update');
+        Route::get('/{activity}/proposal/file', [ActivityController::class, 'downloadProposal'])->name('proposal.file');
+        Route::post('/{activity}/submit', [ActivityController::class, 'submit'])->name('submit');
+        Route::post('/{activity}/decision', [ActivityController::class, 'decide'])->name('decision')->middleware('can:activities.approve');
+        Route::post('/{activity}/complete', [ActivityController::class, 'complete'])->name('complete');
+        Route::post('/{activity}/cancel', [ActivityController::class, 'cancel'])->name('cancel');
+
+        Route::post('/{activity}/committee', [ActivityCommitteeController::class, 'store'])->name('committee.store');
+        Route::post('/{activity}/timeline', [ActivityTimelineController::class, 'store'])->name('timeline.store');
+        Route::post('/{activity}/budget', [ActivityBudgetController::class, 'store'])->name('budget.store');
+
+        Route::put('/{activity}/report', [ActivityReportController::class, 'save'])->name('report.save');
+        Route::post('/{activity}/report/submit', [ActivityReportController::class, 'submit'])->name('report.submit');
+        Route::post('/{activity}/report/review', [ActivityReportController::class, 'review'])->name('report.review')->middleware('can:activities.approve');
+        Route::get('/{activity}/report/file', [ActivityReportController::class, 'download'])->name('report.file');
+    });
+    Route::put('/committee-members/{committeeMember}', [ActivityCommitteeController::class, 'update'])->name('committee.update');
+    Route::delete('/committee-members/{committeeMember}', [ActivityCommitteeController::class, 'destroy'])->name('committee.destroy');
+    Route::put('/timelines/{timeline}', [ActivityTimelineController::class, 'update'])->name('timeline.update');
+    Route::patch('/timelines/{timeline}/status', [ActivityTimelineController::class, 'status'])->name('timeline.status');
+    Route::delete('/timelines/{timeline}', [ActivityTimelineController::class, 'destroy'])->name('timeline.destroy');
+    Route::put('/budget-items/{budgetItem}', [ActivityBudgetController::class, 'update'])->name('budget.update');
+    Route::patch('/budget-items/{budgetItem}/actual', [ActivityBudgetController::class, 'actual'])->name('budget.actual');
+    Route::delete('/budget-items/{budgetItem}', [ActivityBudgetController::class, 'destroy'])->name('budget.destroy');
+
+    // Dokumentasi & publikasi (akses dicek lewat policy di controller)
+    Route::prefix('albums')->name('albums.')->group(function () {
+        Route::get('/', [AlbumController::class, 'index'])->name('index');
+        Route::get('/create', [AlbumController::class, 'create'])->name('create');
+        Route::post('/', [AlbumController::class, 'store'])->name('store');
+        Route::get('/{album}', [AlbumController::class, 'show'])->name('show');
+        Route::get('/{album}/edit', [AlbumController::class, 'edit'])->name('edit');
+        Route::put('/{album}', [AlbumController::class, 'update'])->name('update');
+        Route::delete('/{album}', [AlbumController::class, 'destroy'])->name('destroy');
+        Route::post('/{album}/status', [AlbumController::class, 'status'])->name('status');
+        Route::post('/{album}/cover', [AlbumController::class, 'cover'])->name('cover');
+        Route::post('/{album}/photos', [MediaController::class, 'storePhotos'])->name('photos.store');
+        Route::post('/{album}/videos', [MediaController::class, 'storeVideo'])->name('videos.store');
+    });
+    Route::put('/media-items/{media}', [MediaController::class, 'update'])->name('media.update');
+    Route::delete('/media-items/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
+    Route::get('/media-items/{media}/file', [MediaController::class, 'file'])->name('media.file');
+    Route::get('/media-items/{media}/thumb', [MediaController::class, 'thumb'])->name('media.thumb');
+
+    Route::prefix('news')->name('news.')->group(function () {
+        Route::get('/', [NewsController::class, 'index'])->name('index');
+        Route::get('/create', [NewsController::class, 'create'])->name('create')->middleware('can:news.manage');
+        Route::post('/', [NewsController::class, 'store'])->name('store')->middleware('can:news.manage');
+        Route::get('/{post}', [NewsController::class, 'show'])->name('show');
+        Route::get('/{post}/edit', [NewsController::class, 'edit'])->name('edit');
+        Route::put('/{post}', [NewsController::class, 'update'])->name('update');
+        Route::delete('/{post}', [NewsController::class, 'destroy'])->name('destroy');
+        Route::post('/{post}/status', [NewsController::class, 'status'])->name('status');
+        Route::get('/{post}/cover', [NewsController::class, 'cover'])->name('cover');
+    });
+
+    Route::prefix('archive')->name('archive.')->group(function () {
+        Route::get('/', [ArchiveController::class, 'index'])->name('index');
+        Route::get('/create', [ArchiveController::class, 'create'])->name('create')->middleware('can:archive.manage');
+        Route::post('/', [ArchiveController::class, 'store'])->name('store')->middleware('can:archive.manage');
+        Route::get('/{document}/edit', [ArchiveController::class, 'edit'])->name('edit')->middleware('can:archive.manage');
+        Route::put('/{document}', [ArchiveController::class, 'update'])->name('update')->middleware('can:archive.manage');
+        Route::delete('/{document}', [ArchiveController::class, 'destroy'])->name('destroy')->middleware('can:archive.manage');
+        Route::get('/{document}/download', [ArchiveController::class, 'download'])->name('download');
     });
 
     // Akun pengguna (akun baru dibuat dari halaman Anggota)

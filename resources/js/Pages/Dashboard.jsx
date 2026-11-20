@@ -1,8 +1,8 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Badge, Card, PageHeader } from '@/Components/ui';
 
-export default function Dashboard({ stats, recent, access, last_login_at }) {
+export default function Dashboard({ stats, recent, access, last_login_at, upcoming = [], news = [] }) {
     const { auth } = usePage().props;
     const user = auth.user;
     const isSuper = auth.permissions.includes('*');
@@ -25,6 +25,47 @@ export default function Dashboard({ stats, recent, access, last_login_at }) {
                         </div>
                     ))}
                 </dl>
+            )}
+
+            {upcoming.length > 0 && (
+                <section className="mb-8">
+                    <h2 className="mb-3 text-base font-bold">Kegiatan mendatang</h2>
+                    <ul className="divide-y divide-[#DDE2E9] rounded-lg border border-[#DDE2E9] bg-white">
+                        {upcoming.map((a) => (
+                            <li key={a.id}>
+                                <Link href={`/activities/${a.id}`} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 hover:bg-[#F7F8FA]">
+                                    <span>
+                                        <span className="block font-semibold">{a.title}</span>
+                                        <span className="block text-xs text-[#5B6779]">
+                                            {a.when}
+                                            {a.location ? `, ${a.location}` : ''}
+                                        </span>
+                                    </span>
+                                    <Badge>{a.division ?? 'Umum'}</Badge>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
+            {news.length > 0 && (
+                <section className="mb-8">
+                    <h2 className="mb-3 text-base font-bold">Berita terbaru</h2>
+                    <ul className="divide-y divide-[#DDE2E9] rounded-lg border border-[#DDE2E9] bg-white">
+                        {news.map((n) => (
+                            <li key={n.id}>
+                                <Link href={`/news/${n.id}`} className="block px-5 py-3 hover:bg-[#F7F8FA]">
+                                    <span className="block font-semibold">{n.title}</span>
+                                    <span className="block text-xs text-[#5B6779]">
+                                        {n.published_at}
+                                        {n.excerpt ? `, ${n.excerpt}` : ''}
+                                    </span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
             )}
 
             <div className="grid gap-6 lg:grid-cols-3">
