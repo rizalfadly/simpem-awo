@@ -31,7 +31,7 @@ export default function Login() {
                     <div className="relative z-10 flex w-full items-center justify-between text-xs font-bold tracking-widest text-slate-400 uppercase">
                         <span className="inline-flex items-center gap-2 text-[#36D8E8]">
                             <span className="h-2 w-2 rounded-full bg-[#36D8E8] shadow-[0_0_8px_#36D8E8]" />
-                            SIMPEM · AREK WETAN ORGANIZER
+                             AREK WETAN ORGANIZER
                         </span>
                         <span className="hidden sm:inline text-slate-500">EST. 2023</span>
                     </div>
