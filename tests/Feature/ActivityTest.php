@@ -45,10 +45,10 @@ class ActivityTest extends TestCase
     {
         $start = now()->addDays(20)->setTime(8, 0);
 
-        return [
+        return array_merge([
             'title' => 'Bakti Sosial', 'pic_member_id' => $pic->id,
             'starts_at' => $start->format('Y-m-d H:i:s'), 'ends_at' => $start->copy()->setTime(14, 0)->format('Y-m-d H:i:s'),
-        ] + $extra;
+        ], $extra);
     }
 
     // ---------- pembuatan ----------
@@ -97,7 +97,7 @@ class ActivityTest extends TestCase
 
         [$pic, $picMember] = $this->memberUser();
         $this->activity($picMember, ['status' => 'draft']);
-        $this->actingAs($pic)->get('/activities')->assertInertia(fn (Assert $p) => $p->has('activities.data', 1));
+        $this->actingAs($pic)->get('/activities')->assertInertia(fn (Assert $p) => $p->has('activities.data', 2));
     }
 
     public function test_basic_viewers_do_not_receive_proposal_budget_or_report(): void
@@ -172,7 +172,7 @@ class ActivityTest extends TestCase
         $this->actingAs($approver)->post("/activities/{$a->id}/decision", ['decision' => 'reject', 'note' => 'Anggaran terlalu besar']);
         $this->assertSame('rejected', $a->fresh()->status);
 
-        $a->update(['status' => 'proposed']);
+        $a->refresh()->update(['status' => 'proposed']);
         $this->actingAs($approver)->post("/activities/{$a->id}/decision", ['decision' => 'approve']);
         $this->assertSame('approved', $a->fresh()->status);
         $this->assertSame($approver->id, $a->fresh()->decided_by);

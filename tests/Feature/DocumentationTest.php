@@ -117,6 +117,7 @@ class DocumentationTest extends TestCase
         $album = $this->albumWithPhoto($owner);
         $media = $album->media()->first();
 
+        auth()->logout();
         $this->get("/media-items/{$media->id}/file")->assertRedirect('/login');
         $this->actingAs($stranger)->get("/media-items/{$media->id}/file")->assertForbidden();
         $this->actingAs($stranger)->get("/media-items/{$media->id}/thumb")->assertForbidden();
