@@ -21,7 +21,7 @@ export default function Dashboard({ stats, recent, access, last_login_at, upcomi
                     {stats.map((s) => (
                         <div key={s.label} className="px-6 py-5">
                             <dt className="text-sm font-medium text-[#5B6779]">{s.label}</dt>
-                            <dd className="mt-1 text-4xl font-extrabold tabular-nums tracking-tight">{s.value}</dd>
+                            <dd className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight">{s.value}</dd>
                         </div>
                     ))}
                 </dl>

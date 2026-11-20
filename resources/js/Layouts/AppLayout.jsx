@@ -36,6 +36,14 @@ export default function AppLayout({ children }) {
             ],
         },
         {
+            label: 'Keuangan',
+            items: [
+                { href: '/finance', label: 'Laporan Keuangan', activeIf: url === '/finance' || url.startsWith('/finance/reports') || url.startsWith('/finance?') },
+                ['finance.view', 'finance.record', 'finance.review', 'finance.approve', 'finance.publish'].some(can) && { href: '/finance/transactions', label: 'Buku Kas' },
+                { href: '/finance/disputes', label: 'Sanggahan' },
+            ],
+        },
+        {
             label: 'Sistem',
             items: [
                 can('users.view') && { href: '/users', label: 'Akun Pengguna' },

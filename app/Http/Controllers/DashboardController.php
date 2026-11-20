@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\ActivityReport;
 use App\Models\AuditLog;
+use App\Models\FinanceDispute;
+use App\Models\FinanceReport;
 use App\Models\Member;
 use App\Models\NewsPost;
 use App\Models\User;
@@ -54,6 +56,29 @@ class DashboardController extends Controller
                 'location' => $a->location,
                 'division' => $a->division?->name,
             ]);
+
+        $latest = FinanceReport::where('status', 'published')->orderByDesc('year')->orderByDesc('month')->first();
+        if ($latest) {
+            $closing = $latest->totals()['closing'];
+            $stats[] = ['label' => 'Saldo kas, '.$latest->label(), 'value' => ($closing < 0 ? '-' : '').'Rp '.number_format(abs($closing), 0, ',', '.')];
+        }
+
+        $pending = 0;
+        if ($user->can('finance.record')) {
+            $pending += FinanceReport::where('status', 'revision')->count() + FinanceDispute::where('status', 'open')->count();
+        }
+        if ($user->can('finance.review')) {
+            $pending += FinanceReport::where('status', 'submitted')->count() + FinanceDispute::where('status', 'clarified')->count();
+        }
+        if ($user->can('finance.approve')) {
+            $pending += FinanceReport::where('status', 'reviewed')->count() + FinanceDispute::where('status', 'reviewed')->count();
+        }
+        if ($user->can('finance.publish')) {
+            $pending += FinanceReport::where('status', 'approved')->count();
+        }
+        if ($pending > 0) {
+            $stats[] = ['label' => 'Menunggu tindakan keuangan', 'value' => $pending];
+        }
 
         $news = NewsPost::where('status', 'published')
             ->orderByDesc('published_at')

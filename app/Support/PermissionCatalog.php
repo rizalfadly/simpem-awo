@@ -51,6 +51,16 @@ final class PermissionCatalog
                 ],
             ],
             [
+                'label' => 'Keuangan',
+                'items' => [
+                    'finance.view'    => 'Melihat buku kas, draf laporan, dan riwayat perubahan',
+                    'finance.record'  => 'Mencatat transaksi, mengajukan laporan, mengelola kategori, menjawab sanggahan (Bendahara)',
+                    'finance.review'  => 'Mereview laporan dan sanggahan (Wakil Ketua)',
+                    'finance.approve' => 'Menyetujui laporan dan memutuskan sanggahan (Ketua)',
+                    'finance.publish' => 'Mempublikasikan laporan yang sudah disetujui',
+                ],
+            ],
+            [
                 'label' => 'Akun Pengguna',
                 'items' => [
                     'users.view'           => 'Melihat daftar akun',
