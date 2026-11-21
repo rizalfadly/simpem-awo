@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\ActivityReport;
 use App\Models\AuditLog;
+use App\Models\AssetLoan;
 use App\Models\FinanceDispute;
 use App\Models\FinanceReport;
 use App\Models\Member;
@@ -80,6 +81,29 @@ class DashboardController extends Controller
             $stats[] = ['label' => 'Menunggu tindakan keuangan', 'value' => $pending];
         }
 
+        if ($user->can('assets.loans')) {
+            $loanActions = AssetLoan::where('status', 'requested')->count()
+                + AssetLoan::where('status', 'lent')->where('due_date', '<', today())->count();
+            if ($loanActions > 0) {
+                $stats[] = ['label' => 'Peminjaman perlu tindakan', 'value' => $loanActions];
+            }
+        }
+
+        $myLoans = $user->member_id
+            ? AssetLoan::where('borrower_member_id', $user->member_id)
+                ->whereIn('status', ['requested', 'approved', 'lent'])
+                ->with('items.asset:id,name')
+                ->orderBy('due_date')->limit(5)->get()
+                ->map(fn (AssetLoan $l) => [
+                    'id'      => $l->id,
+                    'code'    => $l->code,
+                    'items'   => $l->items->map(fn ($i) => "{$i->asset->name} x{$i->quantity}")->join(', '),
+                    'status'  => $l->statusLabel(),
+                    'due'     => $l->due_date->format('d/m/Y'),
+                    'overdue' => $l->isOverdue(),
+                ])
+            : collect();
+
         $news = NewsPost::where('status', 'published')
             ->orderByDesc('published_at')
             ->limit(3)
@@ -113,6 +137,7 @@ class DashboardController extends Controller
             'recent'        => $recent,
             'upcoming'      => $upcoming,
             'news'          => $news,
+            'my_loans'      => $myLoans,
             'access'        => $access,
             'last_login_at' => $user->last_login_at?->format('d/m/Y H:i'),
         ]);

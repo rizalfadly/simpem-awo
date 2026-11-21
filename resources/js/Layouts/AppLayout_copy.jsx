@@ -197,6 +197,17 @@ export default function AppLayout({ children }) {
             ],
         },
         {
+            label: 'Inventaris',
+            items: [
+                {
+                    href: '/inventory',
+                    label: 'Barang',
+                    activeIf: url === '/inventory' || url.startsWith('/inventory?') || (url.startsWith('/inventory/') && !url.startsWith('/inventory/loans')),
+                },
+                { href: '/inventory/loans', label: 'Peminjaman' },
+            ],
+        },
+        {
             label: 'Keuangan',
             items: [
                 { href: '/finance', label: 'Laporan Keuangan', activeIf: url === '/finance' || url.startsWith('/finance/reports') || url.startsWith('/finance?') },

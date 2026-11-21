@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Badge, Card, PageHeader } from '@/Components/ui';
 
-export default function Dashboard({ stats, recent, access, last_login_at, upcoming = [], news = [] }) {
+export default function Dashboard({ stats, recent, access, last_login_at, upcoming = [], news = [], my_loans = [] }) {
     const { auth } = usePage().props;
     const user = auth.user;
     const isSuper = auth.permissions.includes('*');
@@ -42,6 +42,27 @@ export default function Dashboard({ stats, recent, access, last_login_at, upcomi
                                         </span>
                                     </span>
                                     <Badge>{a.division ?? 'Umum'}</Badge>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
+            {my_loans.length > 0 && (
+                <section className="mb-8">
+                    <h2 className="mb-3 text-base font-bold">Peminjaman saya</h2>
+                    <ul className="divide-y divide-[#DDE2E9] rounded-lg border border-[#DDE2E9] bg-white">
+                        {my_loans.map((l) => (
+                            <li key={l.id}>
+                                <Link href={`/inventory/loans/${l.id}`} className="flex flex-wrap items-start justify-between gap-2 px-5 py-3 hover:bg-[#F7F8FA]">
+                                    <span>
+                                        <span className="block font-semibold">{l.items}</span>
+                                        <span className="block text-xs text-[#5B6779]">
+                                            {l.code} · kembali paling lambat {l.due}
+                                        </span>
+                                    </span>
+                                    <Badge tone={l.overdue ? 'red' : 'neutral'}>{l.overdue ? 'Terlambat' : l.status}</Badge>
                                 </Link>
                             </li>
                         ))}

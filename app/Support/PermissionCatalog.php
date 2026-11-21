@@ -51,6 +51,14 @@ final class PermissionCatalog
                 ],
             ],
             [
+                'label' => 'Inventaris & Aset',
+                'items' => [
+                    'assets.view'   => 'Melihat seluruh data barang (kondisi, nilai, riwayat penggunaan)',
+                    'assets.manage' => 'Mengelola data barang, kategori, dan kondisi',
+                    'assets.loans'  => 'Memproses peminjaman (setujui, serahkan, terima kembali)',
+                ],
+            ],
+            [
                 'label' => 'Keuangan',
                 'items' => [
                     'finance.view'    => 'Melihat buku kas, draf laporan, dan riwayat perubahan',

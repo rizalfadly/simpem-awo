@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             OrganizationSeeder::class,
             FinanceCategorySeeder::class,
+            AssetCategorySeeder::class,
             AdminSeeder::class,
         ]);
     }

@@ -19,4 +19,15 @@ return [
         'allow_early_submission' => env('SIMPEM_FINANCE_EARLY_SUBMISSION', false),
     ],
 
+    'assets' => [
+        /*
+         | Pemisahan tugas peminjaman: pengelola tidak boleh menyetujui peminjaman atas namanya sendiri.
+         | Matikan (SIMPEM_ASSET_SEPARATION=false) bila hanya ada satu pengelola yang juga meminjam.
+         */
+        'separation_of_duties' => env('SIMPEM_ASSET_SEPARATION', true),
+
+        /* Lama peminjaman maksimal (hari), termasuk hari pertama dan terakhir. */
+        'max_loan_days' => (int) env('SIMPEM_ASSET_MAX_LOAN_DAYS', 30),
+    ],
+
 ];
