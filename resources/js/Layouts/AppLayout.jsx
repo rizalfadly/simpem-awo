@@ -197,6 +197,18 @@ export default function AppLayout({ children }) {
             ],
         },
         {
+            label: 'Kemitraan',
+            items: [
+                {
+                    href: '/partners',
+                    label: 'Mitra & UMKM',
+                    activeIf: url === '/partners' || url.startsWith('/partners?') || (url.startsWith('/partners/') && !url.startsWith('/partners/promotions') && !url.startsWith('/partners/partnerships')),
+                },
+                { href: '/partners/promotions', label: 'Promosi Mitra' },
+                can('partners.view') && { href: '/partners/partnerships', label: 'Kerja Sama' },
+            ],
+        },
+        {
             label: 'Inventaris',
             items: [
                 {

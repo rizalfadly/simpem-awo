@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Badge, Card, PageHeader } from '@/Components/ui';
 
-export default function Dashboard({ stats, recent, access, last_login_at, upcoming = [], news = [], my_loans = [] }) {
+export default function Dashboard({ stats, recent, access, last_login_at, upcoming = [], news = [], my_loans = [], promos = [] }) {
     const { auth } = usePage().props;
     const user = auth.user;
     const isSuper = auth.permissions.includes('*');
@@ -42,6 +42,24 @@ export default function Dashboard({ stats, recent, access, last_login_at, upcomi
                                         </span>
                                     </span>
                                     <Badge>{a.division ?? 'Umum'}</Badge>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
+            {promos.length > 0 && (
+                <section className="mb-8">
+                    <h2 className="mb-3 text-base font-bold">Promo dari mitra</h2>
+                    <ul className="divide-y divide-[#DDE2E9] rounded-lg border border-[#DDE2E9] bg-white">
+                        {promos.map((p) => (
+                            <li key={p.id}>
+                                <Link href="/partners/promotions" className="block px-5 py-3 hover:bg-[#F7F8FA]">
+                                    <span className="block font-semibold">{p.title}</span>
+                                    <span className="block text-xs text-[#5B6779]">
+                                        {p.partner} · berlaku sampai {p.until}
+                                    </span>
                                 </Link>
                             </li>
                         ))}

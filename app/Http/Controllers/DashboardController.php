@@ -9,6 +9,8 @@ use App\Models\AssetLoan;
 use App\Models\FinanceDispute;
 use App\Models\FinanceReport;
 use App\Models\Member;
+use App\Models\PartnerPromotion;
+use App\Models\Partnership;
 use App\Models\NewsPost;
 use App\Models\User;
 use App\Support\PermissionCatalog;
@@ -104,6 +106,24 @@ class DashboardController extends Controller
                 ])
             : collect();
 
+        if ($user->can('partners.view')) {
+            $attention = Partnership::where('status', 'active')
+                ->where(fn ($q) => $q->whereBetween('ends_on', [today(), today()->addDays(30)])->orWhere('ends_on', '<', today()))
+                ->count();
+            if ($attention > 0) {
+                $stats[] = ['label' => 'Kerja sama perlu perhatian', 'value' => $attention];
+            }
+        }
+
+        $promos = PartnerPromotion::current()
+            ->whereHas('partner', fn ($q) => $q->where('status', 'active'))
+            ->with('partner:id,name')
+            ->orderBy('ends_on')->limit(3)->get()
+            ->map(fn (PartnerPromotion $p) => [
+                'id' => $p->id, 'title' => $p->title, 'partner' => $p->partner->name,
+                'until' => $p->ends_on->format('d/m/Y'),
+            ]);
+
         $news = NewsPost::where('status', 'published')
             ->orderByDesc('published_at')
             ->limit(3)
@@ -138,6 +158,7 @@ class DashboardController extends Controller
             'upcoming'      => $upcoming,
             'news'          => $news,
             'my_loans'      => $myLoans,
+            'promos'        => $promos,
             'access'        => $access,
             'last_login_at' => $user->last_login_at?->format('d/m/Y H:i'),
         ]);

@@ -51,6 +51,13 @@ final class PermissionCatalog
                 ],
             ],
             [
+                'label' => 'Kemitraan & UMKM',
+                'items' => [
+                    'partners.view'   => 'Melihat data internal mitra (kontak, catatan) dan kerja sama',
+                    'partners.manage' => 'Mengelola mitra, produk, promosi (draf), dan kerja sama',
+                ],
+            ],
+            [
                 'label' => 'Inventaris & Aset',
                 'items' => [
                     'assets.view'   => 'Melihat seluruh data barang (kondisi, nilai, riwayat penggunaan)',
