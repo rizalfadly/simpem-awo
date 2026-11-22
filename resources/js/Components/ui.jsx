@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 export const cx = (...c) => c.filter(Boolean).join(' ');
 
@@ -37,17 +37,17 @@ export const inputCls =
     'w-full rounded-md border border-[#CBD2DC] bg-white px-3 py-2 text-sm text-[#16202E] placeholder:text-[#8A94A4] ' +
     'focus:border-[#16202E] focus:outline-none focus:ring-2 focus:ring-[#16202E]/15 disabled:bg-[#EEF1F5] disabled:text-[#5B6779]';
 
-export function Input({ className, ...props }) {
-    return <input className={cx(inputCls, className)} {...props} />;
-}
+export const Input = forwardRef(function Input({ className, ...props }, ref) {
+    return <input ref={ref} className={cx(inputCls, className)} {...props} />;
+});
 
-export function Select({ className, children, ...props }) {
+export const Select = forwardRef(function Select({ className, children, ...props }, ref) {
     return (
-        <select className={cx(inputCls, 'pr-8', className)} {...props}>
+        <select ref={ref} className={cx(inputCls, 'pr-8', className)} {...props}>
             {children}
         </select>
     );
-}
+});
 
 export function Field({ label, error, hint, htmlFor, children }) {
     return (
