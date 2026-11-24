@@ -171,6 +171,7 @@ class NewsController extends Controller
             'status'       => $to,
             'published_at' => $to === 'published' ? now() : $post->published_at,
             'published_by' => $to === 'published' ? $user->id : $post->published_by,
+            'is_public'    => $to === 'published' ? $post->is_public : false,
         ]);
 
         return back()->with('success', 'Status berita: '.NewsPost::STATUSES[$to].'.');

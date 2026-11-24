@@ -1,8 +1,8 @@
-import { Head, usePage, useForm } from '@inertiajs/react';
+import { Head, router, usePage, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Button, Card, Field, Input, PageHeader } from '@/Components/ui';
 
-export default function Edit({ account }) {
+export default function Edit({ account, public_profile = null }) {
     const { auth } = usePage().props;
     const forced = auth.user.must_change_password;
     const { data, setData, put, processing, errors, reset } = useForm({
@@ -63,6 +63,25 @@ export default function Edit({ account }) {
                     </Card>
                 </form>
             </div>
+
+            {public_profile !== null && (
+                <Card className="mt-6 max-w-4xl p-5">
+                    <h2 className="text-base font-bold">Website publik</h2>
+                    <p className="mt-1 text-sm text-[#5B6779]">
+                        Jika Anda menjabat di struktur pengurus, nama dan foto Anda dapat ditampilkan di website publik organisasi. Secara bawaan{' '}
+                        <strong>tidak ditampilkan</strong>. Pilihan ini sepenuhnya milik Anda dan dapat diubah kapan saja.
+                    </p>
+                    <label className="mt-4 flex items-center gap-2 text-sm font-semibold">
+                        <input
+                            type="checkbox"
+                            checked={public_profile}
+                            onChange={(e) => router.put('/profile/public', { public_profile: e.target.checked }, { preserveScroll: true })}
+                            className="h-4 w-4 rounded border-[#CBD2DC] text-[#B3202A] focus:ring-[#B3202A]"
+                        />
+                        Tampilkan nama dan foto saya di struktur pengurus website publik
+                    </label>
+                </Card>
+            )}
         </AppLayout>
     );
 }

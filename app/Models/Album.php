@@ -27,7 +27,7 @@ class Album extends Model
 
     protected function casts(): array
     {
-        return ['event_date' => 'date', 'published_at' => 'datetime'];
+        return ['event_date' => 'date', 'published_at' => 'datetime', 'is_public' => 'boolean'];
     }
 
     public function activity(): BelongsTo

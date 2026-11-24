@@ -20,7 +20,7 @@ class NewsPost extends Model
 
     protected function casts(): array
     {
-        return ['published_at' => 'datetime'];
+        return ['published_at' => 'datetime', 'is_public' => 'boolean'];
     }
 
     public function activity(): BelongsTo

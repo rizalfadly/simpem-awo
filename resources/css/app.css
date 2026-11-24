@@ -145,3 +145,119 @@
         animation: none !important;
     }
 }
+
+/* Efek Beranda Arek Wetan Organizer */
+@keyframes awoMarquee {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.awo-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: awoMarquee 26s linear infinite;
+}
+
+.awo-marquee-track:hover {
+    animation-play-state: paused;
+}
+
+.awo-hero-grid {
+    background-image:
+        linear-gradient(to right, rgba(54, 216, 232, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(54, 216, 232, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* Animasi aliran jalur listrik bagan struktur */
+@keyframes awoFlowDown {
+    0% {
+        top: -12px;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+.awo-wire-v {
+    position: relative;
+    overflow: hidden;
+    background: rgba(54, 216, 232, 0.22);
+}
+
+.awo-wire-v::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 14px;
+    border-radius: 9999px;
+    background: #36d8e8;
+    box-shadow: 0 0 10px #36d8e8, 0 0 18px rgba(54, 216, 232, 0.75);
+    animation: awoFlowDown 1.9s linear infinite;
+}
+
+/* Denyut simpul & jalur hijau untuk warga/anggota di dalam divisi */
+@keyframes awoNodePulse {
+    0%,
+    100% {
+        box-shadow: 0 0 8px rgba(54, 216, 232, 0.55);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(54, 216, 232, 1), 0 0 26px rgba(54, 216, 232, 0.45);
+        transform: scale(1.15);
+    }
+}
+
+@keyframes awoGreenPulse {
+    0%,
+    100% {
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.55);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(34, 197, 94, 1), 0 0 24px rgba(16, 185, 129, 0.45);
+        transform: scale(1.15);
+    }
+}
+
+.awo-node-pulse {
+    animation: awoNodePulse 1.6s ease-in-out infinite;
+}
+
+.awo-wire-green {
+    position: relative;
+    overflow: hidden;
+    background: rgba(34, 197, 94, 0.25);
+}
+
+.awo-wire-green::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 16px;
+    border-radius: 9999px;
+    background: #22c55e;
+    box-shadow: 0 0 10px #22c55e, 0 0 18px rgba(34, 197, 94, 0.85);
+    animation: awoFlowDown 1.5s linear infinite;
+}
+
+.awo-node-green {
+    animation: awoGreenPulse 1.65s ease-in-out infinite;
+}

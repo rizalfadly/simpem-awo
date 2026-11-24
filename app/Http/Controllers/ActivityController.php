@@ -392,7 +392,7 @@ class ActivityController extends Controller
             return back()->with('error', 'Kegiatan ini tidak dapat dibatalkan.');
         }
 
-        $activity->update(['status' => 'cancelled', 'cancelled_reason' => $data['reason']]);
+        $activity->update(['status' => 'cancelled', 'cancelled_reason' => $data['reason'], 'is_public' => false]);
 
         return back()->with('success', 'Kegiatan dibatalkan.');
     }

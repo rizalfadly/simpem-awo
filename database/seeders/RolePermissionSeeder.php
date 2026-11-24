@@ -29,6 +29,7 @@ class RolePermissionSeeder extends Seeder
             'gallery.manage', 'news.manage', 'content.publish', 'archive.view', 'archive.manage',
             'assets.view', 'assets.manage', 'assets.loans',
             'partners.view', 'partners.manage',
+            'site.manage',
         ],
         'Bendahara'       => ['activities.view', 'finance.view', 'finance.record', 'assets.view', 'partners.view'],   // izin keuangan menyusul di V1.4
         'Ketua Divisi'    => ['members.view', 'activities.view', 'activities.create'],

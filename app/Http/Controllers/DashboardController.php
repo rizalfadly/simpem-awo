@@ -8,6 +8,7 @@ use App\Models\AuditLog;
 use App\Models\AssetLoan;
 use App\Models\FinanceDispute;
 use App\Models\FinanceReport;
+use App\Models\ContactMessage;
 use App\Models\Member;
 use App\Models\PartnerPromotion;
 use App\Models\Partnership;
@@ -123,6 +124,13 @@ class DashboardController extends Controller
                 'id' => $p->id, 'title' => $p->title, 'partner' => $p->partner->name,
                 'until' => $p->ends_on->format('d/m/Y'),
             ]);
+
+        if ($user->can('site.manage')) {
+            $unread = ContactMessage::where('status', 'new')->count();
+            if ($unread > 0) {
+                $stats[] = ['label' => 'Pesan website belum ditangani', 'value' => $unread];
+            }
+        }
 
         $news = NewsPost::where('status', 'published')
             ->orderByDesc('published_at')

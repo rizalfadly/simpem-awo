@@ -197,6 +197,15 @@ export default function AppLayout({ children }) {
             ],
         },
         {
+            label: 'Website',
+            items: [
+                can('content.publish') && { href: '/site/content', label: 'Kurasi Konten Publik' },
+                can('site.manage') && { href: '/site/settings', label: 'Pengaturan Website' },
+                can('site.manage') && { href: '/site/messages', label: 'Pesan Masuk' },
+                { href: '/', label: 'Lihat Website', activeIf: false },
+            ],
+        },
+        {
             label: 'Kemitraan',
             items: [
                 {

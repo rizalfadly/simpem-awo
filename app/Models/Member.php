@@ -32,6 +32,7 @@ class Member extends Model
             'birth_date'        => 'date',
             'joined_at'         => 'date',
             'status_changed_at' => 'datetime',
+            'public_profile'    => 'boolean',
         ];
     }
 

@@ -51,6 +51,12 @@ final class PermissionCatalog
                 ],
             ],
             [
+                'label' => 'Website Publik',
+                'items' => [
+                    'site.manage' => 'Mengelola profil, kontak, dan pesan masuk website publik',
+                ],
+            ],
+            [
                 'label' => 'Kemitraan & UMKM',
                 'items' => [
                     'partners.view'   => 'Melihat data internal mitra (kontak, catatan) dan kerja sama',

@@ -29,7 +29,7 @@ class ArchiveDocument extends Model
 
     protected function casts(): array
     {
-        return ['document_date' => 'date', 'size_bytes' => 'integer'];
+        return ['document_date' => 'date', 'size_bytes' => 'integer', 'is_public' => 'boolean'];
     }
 
     public function activity(): BelongsTo

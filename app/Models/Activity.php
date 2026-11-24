@@ -38,6 +38,7 @@ class Activity extends Model
             'proposal_submitted_at' => 'datetime',
             'decided_at'            => 'datetime',
             'completed_at'          => 'datetime',
+            'is_public'             => 'boolean',
         ];
     }
 

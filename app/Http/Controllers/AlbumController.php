@@ -200,6 +200,7 @@ class AlbumController extends Controller
             'status'       => $to,
             'published_at' => $to === 'published' ? now() : $album->published_at,
             'published_by' => $to === 'published' ? $user->id : $album->published_by,
+            'is_public'    => $to === 'published' ? $album->is_public : false,
         ]);
 
         return back()->with('success', 'Status album: '.Album::STATUSES[$to].'.');
