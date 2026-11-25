@@ -20,7 +20,7 @@ class SiteSetting extends Model
 
     public const DEFAULTS = [
         'name' => 'Arek Wetan Organizer', 'tagline' => '', 'about' => '', 'vision' => '', 'mission' => '', 'history' => '',
-        'address' => '', 'email' => '', 'phone' => '', 'whatsapp' => '', 'instagram' => '', 'facebook' => '', 'youtube' => '',
+        'address' => '', 'email' => '', 'phone' => '', 'whatsapp' => '', 'instagram' => '', 'tiktok' => '', 'youtube' => '',
         'maps_url' => '', 'hours' => '', 'logo_path' => '', 'hero_path' => '',
     ];
 
@@ -59,7 +59,7 @@ class SiteSetting extends Model
             'whatsapp'  => $s['whatsapp'],
             'whatsapp_url' => strlen($digits) >= 8 && strlen($digits) <= 15 ? "https://wa.me/{$digits}" : null,
             'instagram' => $s['instagram'] !== '' ? ltrim($s['instagram'], '@') : '',
-            'facebook'  => $s['facebook'],
+            'tiktok'    => $s['tiktok'],
             'youtube'   => $s['youtube'],
             'maps_url'  => $s['maps_url'],
             'hours'     => $s['hours'],

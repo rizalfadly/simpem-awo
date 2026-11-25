@@ -2,29 +2,102 @@ import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Button, Card, Field, Input, PageHeader, inputCls } from '@/Components/ui';
 
+const INITIAL_FIELDS = {
+    name: '',
+    tagline: '',
+    about: '',
+    vision: '',
+    mission: '',
+    history: '',
+    address: '',
+    email: '',
+    phone: '',
+    whatsapp: '',
+    instagram: '',
+    tiktok: '',
+    youtube: '',
+    maps_url: '',
+    hours: '',
+};
+
+function sanitizeInitialValues(settings) {
+    const base = { ...INITIAL_FIELDS };
+    if (settings && typeof settings === 'object') {
+        for (const key of Object.keys(settings)) {
+            const val = settings[key];
+            if (typeof val === 'string' || typeof val === 'number') {
+                base[key] = String(val);
+            } else if (val === null || val === undefined) {
+                base[key] = '';
+            }
+        }
+    }
+    return base;
+}
+
 export default function Settings({ settings, logo, hero }) {
-    const { data, setData, post, processing, errors } = useForm({ _method: 'put', ...settings, logo: null, hero: null, remove_logo: false, remove_hero: false });
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'put',
+        ...sanitizeInitialValues(settings),
+        logo: null,
+        hero: null,
+        remove_logo: false,
+        remove_hero: false,
+    });
+
     const set = (k) => (e) => setData(k, e.target.value);
+
     const area = (k, label, rows = 3, hint) => (
         <Field label={label} htmlFor={k} error={errors[k]} hint={hint}>
-            <textarea id={k} rows={rows} value={data[k]} onChange={set(k)} className={inputCls} />
+            <textarea
+                id={k}
+                rows={rows}
+                value={data[k] ?? ''}
+                onChange={set(k)}
+                className={inputCls}
+            />
         </Field>
     );
+
     const line = (k, label, props = {}) => (
         <Field label={label} htmlFor={k} error={errors[k]} hint={props.hint}>
-            <Input id={k} value={data[k]} onChange={set(k)} {...props} hint={undefined} />
+            <Input
+                id={k}
+                value={data[k] ?? ''}
+                onChange={set(k)}
+                {...props}
+                hint={undefined}
+            />
         </Field>
     );
+
     const image = (kind, label, current) => (
         <div>
             <Field label={label} htmlFor={kind} error={errors[kind]} hint="JPG, PNG, atau WEBP, maks. 8 MB.">
-                <input id={kind} type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setData((d) => ({ ...d, [kind]: e.target.files[0] ?? null, [`remove_${kind}`]: false }))} className={inputCls} />
+                <input
+                    id={kind}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={(e) =>
+                        setData((d) => ({
+                            ...d,
+                            [kind]: e.target.files?.[0] ?? null,
+                            [`remove_${kind}`]: false,
+                        }))
+                    }
+                    className={inputCls}
+                />
             </Field>
             {current && !data[kind] && (
                 <div className="mt-2 flex items-center gap-3">
-                    <img src={current} alt="" className="h-14 rounded-md" />
-                    <label className="flex items-center gap-2 text-sm">
-                        <input type="checkbox" checked={data[`remove_${kind}`]} onChange={(e) => setData(`remove_${kind}`, e.target.checked)} className="h-4 w-4 rounded border-[#CBD2DC] text-[#B3202A] focus:ring-[#B3202A]" />
+                    <img src={current} alt="" className="h-14 rounded-md border border-[#DDE2E9] object-cover" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-[#3B4658]">
+                        <input
+                            type="checkbox"
+                            checked={Boolean(data[`remove_${kind}`])}
+                            onChange={(e) => setData(`remove_${kind}`, e.target.checked)}
+                            className="h-4 w-4 rounded border-[#CBD2DC] text-[#0891B2] focus:ring-[#36D8E8]"
+                        />
                         Hapus
                     </label>
                 </div>
@@ -35,7 +108,10 @@ export default function Settings({ settings, logo, hero }) {
     return (
         <AppLayout>
             <Head title="Pengaturan Website" />
-            <PageHeader title="Pengaturan website" description="Profil dan kontak yang tampil di website publik. Semua isian di halaman ini bersifat publik." />
+            <PageHeader
+                title="Pengaturan website"
+                description="Profil dan kontak yang tampil di website publik. Semua isian di halaman ini bersifat publik."
+            />
 
             <form
                 onSubmit={(e) => {
@@ -71,7 +147,7 @@ export default function Settings({ settings, logo, hero }) {
                         {line('phone', 'Telepon', { inputMode: 'tel' })}
                         {line('whatsapp', 'WhatsApp', { inputMode: 'tel', hint: 'Dipakai untuk tautan wa.me.' })}
                         {line('instagram', 'Instagram', { placeholder: '@username' })}
-                        {line('facebook', 'Facebook (URL)', { placeholder: 'https://' })}
+                        {line('tiktok', 'TikTok', { placeholder: '@username atau https://tiktok.com/@...' })}
                         {line('youtube', 'YouTube (URL)', { placeholder: 'https://' })}
                     </div>
                     {line('maps_url', 'Tautan peta (URL)', { placeholder: 'https://maps.app.goo.gl/...' })}

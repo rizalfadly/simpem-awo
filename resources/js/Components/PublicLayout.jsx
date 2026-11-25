@@ -223,65 +223,99 @@ export default function PublicLayout({ title, children }) {
 
                             <div className="col-span-2 sm:col-span-1">
                                 <p className="text-xs font-black tracking-widest text-[#36D8E8] uppercase">
-                                    Akses
+                                    Media Sosial
                                 </p>
                                 <ul className="mt-3.5 space-y-2 text-sm text-[#94A3B8]">
-                                    <li>
-                                        <Link
-                                            href={auth?.user ? '/dashboard' : '/login'}
-                                            className="font-bold text-white transition hover:text-[#36D8E8]"
-                                        >
-                                            {auth?.user ? 'Buka SIMPEM →' : 'Masuk anggota →'}
-                                        </Link>
-                                    </li>
-                                    {site?.whatsapp_url && (
-                                        <li>
+                                    <li className="pt-1">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {site?.whatsapp_url && (
                                             <a
                                                 href={site.whatsapp_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="transition hover:text-[#36D8E8]"
+                                                aria-label="WhatsApp"
+                                                title={site.whatsapp ? `WhatsApp ${site.whatsapp}` : 'WhatsApp'}
+                                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] text-[#9BA7B4] transition hover:border-[#36D8E8]/50 hover:bg-[#36D8E8]/10 hover:text-[#36D8E8]"
                                             >
-                                                WhatsApp {site.whatsapp || ''}
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                    className="h-4 w-4"
+                                                >
+                                                    <path d="M12.03 2a9.82 9.82 0 0 0-8.43 14.8L2.25 22l5.33-1.4A9.84 9.84 0 1 0 12.03 2Zm5.72 13.94c-.24.68-1.4 1.3-1.92 1.38-.5.08-1.14.12-1.84-.1-.42-.14-.97-.31-1.68-.62-2.96-1.28-4.9-4.27-5.05-4.47-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .58.01.18.01.43-.07.67.51.24.6.82 2.01.9 2.16.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.07 1.31 2.36 1.46.3.15.47.12.64-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.72.81 2.02.96.3.15.5.22.57.34.08.12.08.7-.16 1.38Z" />
+                                                </svg>
                                             </a>
-                                        </li>
-                                    )}
-                                    {site?.instagram && (
-                                        <li>
+                                        )}
+                                        {site?.instagram && (
                                             <a
-                                                href={`https://instagram.com/${site.instagram}`}
+                                                href={`https://instagram.com/${site.instagram.replace(/^@/, '')}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="transition hover:text-[#36D8E8]"
+                                                aria-label="Instagram"
+                                                title={`@${site.instagram.replace(/^@/, '')}`}
+                                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] text-[#9BA7B4] transition hover:border-[#36D8E8]/50 hover:bg-[#36D8E8]/10 hover:text-[#36D8E8]"
                                             >
-                                                Instagram @{site.instagram}
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    aria-hidden="true"
+                                                    className="h-4 w-4"
+                                                >
+                                                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                                                </svg>
                                             </a>
-                                        </li>
-                                    )}
-                                    {site?.facebook && (
-                                        <li>
+                                        )}
+                                        {site?.tiktok && (
                                             <a
-                                                href={site.facebook}
+                                                href={
+                                                    site.tiktok.startsWith('http')
+                                                        ? site.tiktok
+                                                        : `https://www.tiktok.com/@${site.tiktok.replace(/^@/, '')}`
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="transition hover:text-[#36D8E8]"
+                                                aria-label="TikTok"
+                                                title={`@${site.tiktok.replace(/^https?:\/\/(www\.)?tiktok\.com\/@?|^@/, '')}`}
+                                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] text-[#9BA7B4] transition hover:border-[#36D8E8]/50 hover:bg-[#36D8E8]/10 hover:text-[#36D8E8]"
                                             >
-                                                Facebook
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                    className="h-4 w-4"
+                                                >
+                                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                                                </svg>
                                             </a>
-                                        </li>
-                                    )}
-                                    {site?.youtube && (
-                                        <li>
+                                        )}
+                                        {site?.youtube && (
                                             <a
                                                 href={site.youtube}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="transition hover:text-[#36D8E8]"
+                                                aria-label="YouTube"
+                                                title="YouTube"
+                                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] text-[#9BA7B4] transition hover:border-[#36D8E8]/50 hover:bg-[#36D8E8]/10 hover:text-[#36D8E8]"
                                             >
-                                                YouTube
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                    className="h-4 w-4"
+                                                >
+                                                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
+                                                </svg>
                                             </a>
-                                        </li>
-                                    )}
+                                        )}
+                                    </div>
+                                </li>
                                 </ul>
                             </div>
                         </div>

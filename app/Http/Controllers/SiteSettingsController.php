@@ -14,14 +14,14 @@ use Inertia\Response;
 /** Profil organisasi dan kontak untuk website publik. */
 class SiteSettingsController extends Controller
 {
-    private const TEXT = ['name', 'tagline', 'about', 'vision', 'mission', 'history', 'address', 'email', 'phone', 'whatsapp', 'instagram', 'facebook', 'youtube', 'maps_url', 'hours'];
+    private const TEXT = ['name', 'tagline', 'about', 'vision', 'mission', 'history', 'address', 'email', 'phone', 'whatsapp', 'instagram', 'tiktok', 'youtube', 'maps_url', 'hours'];
 
     public function edit(): Response
     {
         $s = SiteSetting::settings();
 
         return Inertia::render('SiteAdmin/Settings', [
-            'settings' => collect(self::TEXT)->mapWithKeys(fn ($k) => [$k => $s[$k]])->all(),
+            'settings' => collect(self::TEXT)->mapWithKeys(fn ($k) => [$k => $s[$k] ?? ''])->all(),
             'logo'     => $s['logo_path'] !== '' ? '/publik/situs/logo' : null,
             'hero'     => $s['hero_path'] !== '' ? '/publik/situs/hero' : null,
         ]);
@@ -41,7 +41,7 @@ class SiteSettingsController extends Controller
             'phone'       => ['nullable', 'string', 'max:40', 'regex:/^[0-9+\-\s()]+$/'],
             'whatsapp'    => ['nullable', 'string', 'max:40', 'regex:/^[0-9+\-\s()]+$/'],
             'instagram'   => ['nullable', 'string', 'max:80', 'regex:/^@?[A-Za-z0-9._]{1,30}$/'],
-            'facebook'    => ['nullable', 'url:http,https', 'max:255'],
+            'tiktok'      => ['nullable', 'string', 'max:255', 'regex:/^(https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/.+|@?[A-Za-z0-9._]{1,30})$/i'],
             'youtube'     => ['nullable', 'url:http,https', 'max:255'],
             'maps_url'    => ['nullable', 'url:http,https', 'max:500'],
             'hours'       => ['nullable', 'string', 'max:200'],
@@ -52,7 +52,7 @@ class SiteSettingsController extends Controller
         ], [
             'name.required'    => 'Nama organisasi wajib diisi.',
             'instagram.regex'  => 'Username Instagram hanya boleh huruf, angka, titik, dan garis bawah.',
-            'facebook.url'     => 'Alamat harus diawali http:// atau https://',
+            'tiktok.regex'     => 'Isi dengan @username TikTok atau tautan https://tiktok.com/... yang valid.',
             'youtube.url'      => 'Alamat harus diawali http:// atau https://',
             'maps_url.url'     => 'Alamat harus diawali http:// atau https://',
             'phone.regex'      => 'Nomor hanya boleh angka dan tanda + - ( ).',
