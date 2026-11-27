@@ -261,3 +261,57 @@
 .awo-node-green {
     animation: awoGreenPulse 1.65s ease-in-out infinite;
 }
+
+@keyframes awoIllustratedFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes awoIllustratedDrift {
+    0%, 100% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+    50% {
+        transform: translate3d(10px, -5px, 0px);
+    }
+}
+
+.animate-awo-float {
+    animation: awoIllustratedFloat 4.5s ease-in-out infinite;
+}
+
+.animate-awo-drift {
+    animation: awoIllustratedDrift 7s ease-in-out infinite;
+}
+
+.awo-brutal-box {
+    border: 2px solid #121212;
+    box-shadow: 4px 4px 0px #121212;
+}
+
+.awo-brutal-btn {
+    border: 2px solid #121212;
+    box-shadow: 4px 4px 0px #121212;
+    transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.awo-brutal-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px #121212;
+}
+
+.awo-brutal-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0px #121212;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-awo-float,
+    .animate-awo-drift {
+        animation: none;
+    }
+}

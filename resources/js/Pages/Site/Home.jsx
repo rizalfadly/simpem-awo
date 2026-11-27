@@ -5,7 +5,7 @@ import { ActivityCard, AlbumCard, NewsCard, PartnerCard } from '@/Components/Sit
 const more = (href, label) => (
     <Link
         href={href}
-        className="inline-flex items-center gap-1.5 text-sm font-bold tracking-wide text-[#0891B2] transition hover:text-[#36D8E8]"
+        className="inline-flex items-center gap-1.5 font-mono text-xs font-black tracking-wider text-[#111214] uppercase transition hover:text-[#FF5C00]"
     >
         <span>{label}</span>
         <span aria-hidden="true">→</span>
@@ -42,13 +42,16 @@ const layout = (count, max = 3, base = 'grid gap-5') => {
 /** Satu blok konten: judul + tautan "Semua ..." berdampingan, latar selang-seling. */
 function Band({ title, href, label, alt, children }) {
     return (
-        <section className={alt ? 'border-y border-[#E3E7EE] bg-white' : ''}>
-            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-                <div className="mb-6 flex flex-wrap items-baseline gap-x-5 gap-y-1">
-                    <h2 className="border-l-4 border-[#36D8E8] pl-3 text-2xl font-extrabold tracking-tight text-[#08090B] sm:text-3xl">
-                        {title}
-                    </h2>
-                    {more(href, label)}
+        <section className={alt ? 'border-y border-[#CBD2DC] bg-white' : 'border-b border-[#CBD2DC] bg-[#ECEEF2]'}>
+            <div className="mx-auto max-w-6xl border-x border-[#CBD2DC] px-4 py-10 sm:px-6 sm:py-14">
+                <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 border-b border-[#CBD2DC] pb-3">
+                    <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                        <h2 className="flex items-center gap-2.5 text-xl font-black tracking-tight text-[#111214] uppercase sm:text-2xl">
+                            <span className="h-3 w-3 bg-[#FF5C00]" aria-hidden="true" />
+                            <span>{title}</span>
+                        </h2>
+                        {more(href, label)}
+                    </div>
                 </div>
                 {children}
             </div>
@@ -58,6 +61,7 @@ function Band({ title, href, label, alt, children }) {
 
 export default function Home({ site, stats, news, activities, albums, partners }) {
     const hasContent = activities.length + news.length + albums.length + partners.length > 0;
+    const siteName = site?.name || 'Arek Wetan Organizer';
 
     // Hanya blok yang punya isi yang dirender; latar selang-seling mengikuti urutan tampil.
     const bands = [
@@ -117,97 +121,109 @@ export default function Home({ site, stats, news, activities, albums, partners }
 
     return (
         <PublicLayout>
-            {/* Hero Gelap Beraksen Cyan & Grid Teknologi */}
-            <section className="relative overflow-hidden bg-[#08090B] text-white">
-                <div className="awo-hero-grid pointer-events-none absolute inset-0" aria-hidden="true" />
-                <div
-                    className="pointer-events-none absolute -top-24 right-1/4 h-80 w-80 rounded-full bg-[#36D8E8]/15 blur-3xl"
-                    aria-hidden="true"
-                />
-                <div
-                    className="pointer-events-none absolute -bottom-28 left-10 h-72 w-72 rounded-full bg-[#0284C7]/15 blur-3xl"
-                    aria-hidden="true"
-                />
+            {/* Hero Brutalist Modular Grid Beraksen Safety Orange */}
+            <section className="relative overflow-hidden border-b border-[#CBD2DC] bg-[#ECEEF2] text-[#111214]">
+                <div className="awo-hero-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
 
-                {site.hero && (
+                {site?.hero && (
                     <img
                         src={site.hero}
                         alt=""
-                        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity"
+                        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-15 mix-blend-multiply"
                     />
                 )}
 
-                <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#36D8E8]/35 bg-[#36D8E8]/10 px-3.5 py-1 text-xs font-bold tracking-widest text-[#36D8E8] uppercase">
-                        <span className="h-2 w-2 rounded-full bg-[#36D8E8] shadow-[0_0_8px_#36D8E8]" />
-                        <span>Youth &amp; Creative Collective</span>
+                <div className="relative mx-auto max-w-6xl border-x border-[#CBD2DC]">
+                    {/* Sel Atas: Headline Besar Edge-to-Edge */}
+                    <div className="relative border-b border-[#CBD2DC] px-4 py-10 sm:px-6 sm:py-14">
+                        <span className="pointer-events-none absolute left-3 top-3 h-2 w-2 bg-[#FF5C00]" aria-hidden="true" />
+                        <span className="pointer-events-none absolute right-3 top-3 h-2 w-2 bg-[#FF5C00]" aria-hidden="true" />
+
+                        <div className="inline-flex items-center gap-2 border border-[#111214] bg-white px-3 py-1 font-mono text-[11px] font-black tracking-widest text-[#111214] uppercase">
+                            <span className="h-2 w-2 bg-[#FF5C00]" />
+                            <span>Youth &amp; Creative Collective</span>
+                        </div>
+
+                        <h1 className="mt-5 max-w-5xl text-4xl font-black leading-[0.95] tracking-tighter text-[#111214] uppercase sm:text-6xl lg:text-7xl">
+                            {siteName}
+                        </h1>
                     </div>
 
-                    <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[0.96] tracking-tight sm:text-7xl lg:text-8xl">
-                        {site.name}
-                    </h1>
+                    {/* Sel Bawah: Tagline & CTA Berdampingan dalam Grid */}
+                    <div className="grid divide-y divide-[#CBD2DC] lg:grid-cols-12 lg:divide-x lg:divide-y-0">
+                        <div className="flex items-center px-4 py-6 sm:px-6 lg:col-span-7">
+                            {site?.tagline ? (
+                                <p className="max-w-2xl font-mono text-xs font-bold leading-relaxed text-[#374151] sm:text-sm">
+                                    {site.tagline}
+                                </p>
+                            ) : (
+                                <p className="max-w-2xl font-mono text-xs font-bold leading-relaxed text-[#374151] sm:text-sm">
+                                    Ruang gerak, event kreatif, arsip kegiatan, dan kolaborasi anak muda yang bangun karya nyata.
+                                </p>
+                            )}
+                        </div>
 
-                    {site.tagline && (
-                        <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-[#94A3B8] sm:text-xl">
-                            {site.tagline}
-                        </p>
-                    )}
-
-                    <div className="mt-9 flex flex-wrap items-center gap-3.5">
-                        <Link
-                            href="/kegiatan"
-                            className="rounded-xl bg-[#36D8E8] px-6 py-3 text-sm font-extrabold text-[#08090B] shadow-[0_0_24px_rgba(54,216,232,0.35)] transition hover:bg-[#67E8F9] active:scale-[0.98]"
-                        >
-                            Jelajah Kegiatan
-                        </Link>
-                        <Link
-                            href="/kontak"
-                            className="rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-bold text-white transition hover:border-[#36D8E8]/50 hover:bg-white/[0.08]"
-                        >
-                            Gabung &amp; Kontak
-                        </Link>
+                        <div className="flex flex-wrap items-center justify-start gap-3 px-4 py-6 sm:px-6 lg:col-span-5 lg:justify-end">
+                            <Link
+                                href="/kegiatan"
+                                className="awo-brutal-btn inline-flex items-center gap-2 bg-[#FF5C00] px-5 py-3 font-mono text-xs font-black tracking-wider text-white uppercase hover:bg-[#E04F00]"
+                            >
+                                <span>Jelajah Kegiatan</span>
+                                <span aria-hidden="true">→</span>
+                            </Link>
+                            <Link
+                                href="/kontak"
+                                className="awo-brutal-btn inline-flex items-center gap-2 bg-white px-5 py-3 font-mono text-xs font-black tracking-wider text-[#111214] uppercase hover:bg-[#F9FAFB]"
+                            >
+                                <span>Gabung &amp; Kontak</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* Strip Marquee Energi Komunitas */}
-            <div className="overflow-hidden border-y border-white/10 bg-[#0E1116] py-2.5 text-[#36D8E8]">
+            <div className="overflow-hidden border-b border-[#111214] bg-[#111214] py-2.5 text-[#FF5C00]">
                 <div className="awo-marquee-track">
                     {[...vibes, ...vibes].map((item, idx) => (
                         <span
                             key={`${item}-${idx}`}
-                            className="mx-6 inline-flex items-center gap-6 text-xs font-extrabold tracking-[0.2em] uppercase"
+                            className="mx-6 inline-flex items-center gap-6 font-mono text-xs font-black tracking-[0.2em] uppercase"
                         >
                             <span>{item}</span>
-                            <span className="h-1.5 w-1.5 rotate-45 bg-[#7A8B8C]" aria-hidden="true" />
+                            <span className="h-1.5 w-1.5 rotate-45 bg-[#F4F4F6]" aria-hidden="true" />
                         </span>
                     ))}
                 </div>
             </div>
 
-            {/* Kartu Statistik Duduk Bersih di Bawah Marquee */}
-            <div className="mx-auto mt-8 grid max-w-4xl gap-4 px-4 sm:grid-cols-3 sm:px-6">
-                {[
-                    ['Anggota Aktif', stats.members, 'Solid & bergerak', '/struktur-pengurus'],
-                    ['Kegiatan Terlaksana', stats.activities, 'Program & event', '/kegiatan'],
-                    ['Mitra & UMKM', stats.partners, 'Kolaborasi lokal', '/mitra'],
-                ].map(([label, value, note, href]) => (
-                    <Link
-                        key={label}
-                        href={href}
-                        className="group block rounded-2xl border border-[#DDE2E9] bg-white px-6 py-5 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#36D8E8]/60 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891B2] active:scale-[0.98]"
-                    >
-                        <span className="block text-3xl font-black tabular-nums tracking-tight text-[#08090B] sm:text-4xl">
-                            {value}
-                        </span>
-                        <span className="mt-1 block text-xs font-bold tracking-wider text-[#0891B2] uppercase">{label}</span>
-                        <span className="mt-1 block text-xs text-[#5B6779]">{note}</span>
-                    </Link>
-                ))}
+            {/* Kartu Statistik Modular di Bawah Marquee */}
+            <div className="border-b border-[#CBD2DC] bg-[#ECEEF2]">
+                <div className="mx-auto grid max-w-6xl divide-y divide-[#CBD2DC] border-x border-[#CBD2DC] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                    {[
+                        ['Anggota Aktif', stats?.members, 'Solid & bergerak', '/struktur-pengurus'],
+                        ['Kegiatan Terlaksana', stats?.activities, 'Program & event', '/kegiatan'],
+                        ['Mitra & UMKM', stats?.partners, 'Kolaborasi lokal', '/mitra'],
+                    ].map(([label, value, note, href]) => (
+                        <Link
+                            key={label}
+                            href={href}
+                            className="group block bg-white/80 px-6 py-6 text-center transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#FF5C00]"
+                        >
+                            <span className="block font-mono text-3xl font-black tabular-nums tracking-tight text-[#111214] transition group-hover:text-[#FF5C00] sm:text-4xl">
+                                {value ?? 0}
+                            </span>
+                            <span className="mt-1.5 block font-mono text-xs font-black tracking-wider text-[#111214] uppercase">
+                                {label}
+                            </span>
+                            <span className="mt-1 block font-mono text-xs text-[#4B5563]">{note}</span>
+                        </Link>
+                    ))}
+                </div>
             </div>
 
-            {/* Daftar Konten: latar selang-seling (abu muda / putih) agar ada ritme antarbagian */}
-            <div className="mt-6">
+            {/* Daftar Konten: latar selang-seling agar ada ritme antarbagian */}
+            <div>
                 {bands.map((b, i) => (
                     <Band key={b.key} title={b.title} href={b.href} label={b.label} alt={i % 2 === 1}>
                         {b.node}
@@ -216,11 +232,11 @@ export default function Home({ site, stats, news, activities, albums, partners }
 
                 {!hasContent && (
                     <Section>
-                        <div className="rounded-2xl border border-dashed border-[#CBD2DC] bg-white px-6 py-12 text-center">
-                            <p className="text-sm font-semibold text-[#08090B]">
+                        <div className="border border-dashed border-[#111214]/30 bg-white px-6 py-12 text-center">
+                            <p className="font-mono text-sm font-black text-[#111214] uppercase">
                                 Konten publik Arek Wetan Organizer sedang disiapkan.
                             </p>
-                            <p className="mt-1 text-xs text-[#5B6779]">
+                            <p className="mt-1 font-mono text-xs text-[#4B5563]">
                                 Nantikan agenda, dokumentasi, dan kabar terbaru segera di halaman ini.
                             </p>
                         </div>
