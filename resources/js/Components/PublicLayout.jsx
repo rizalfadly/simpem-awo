@@ -322,9 +322,37 @@ export default function PublicLayout({ title, children }) {
                     </div>
 
                     {/* Baris Info Kontak Tambahan Jika Terisi di Site */}
-                    {(site?.address || site?.email || site?.phone) && (
+                    {(site?.address || site?.email || site?.phone || site?.maps_url) && (
                         <div className="mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-5 text-xs text-[#9BA7B4]">
-                            {site?.address && <span>{site.address}</span>}
+                            <div className="flex flex-wrap items-center gap-3">
+                                {site?.address && (
+                                    site?.maps_url ? (
+                                        <a
+                                            href={site.maps_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 transition hover:text-[#36D8E8]"
+                                        >
+                                            <span>{site.address}</span>
+                                            <span className="font-bold text-[#36D8E8]">↗</span>
+                                        </a>
+                                    ) : (
+                                        <span>{site.address}</span>
+                                    )
+                                )}
+                                {!site?.address && site?.maps_url && (
+                                    <a
+                                        href={site.maps_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 font-semibold text-[#36D8E8] transition hover:underline"
+                                    >
+                                        <span>Lihat Lokasi di Peta</span>
+                                        <span>↗</span>
+                                    </a>
+                                )}
+                            </div>
+
                             <div className="flex flex-wrap items-center gap-4 tabular-nums">
                                 {site?.email && (
                                     <a href={`mailto:${site.email}`} className="transition hover:text-[#36D8E8]">
